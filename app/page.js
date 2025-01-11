@@ -31,16 +31,18 @@ export default function Home() {
   
       const data = await response.json();
       console.log('Login successful', data); // Process login response as needed
-      const { token } = data;  // Get the token from the response
+      const { token, id } = data;   // Get the token from the response
   
       if (token) {
         localStorage.setItem('authToken', token);
         localStorage.setItem('email', email);
         localStorage.setItem('password', password);
+        localStorage.setItem('id', id);  // Saving user id in localStorage
         router.push('/home');
         setEmail("");
         setPassword("");
       }
+      
     } catch (error) {
       setErrorMessage("Login failed: Please check your credentials");
       console.error('Error:', error.message);
