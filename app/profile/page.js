@@ -3,18 +3,14 @@ import React, { useEffect, useState } from "react";
 import ProfileHeader from "./Profileheader";
 import ProfileStats from "./Profilestats";
 import ProfilePosts from "./Profilepost";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/ui/Components/SideBar";
-
 const ProfilePage = () => {
   const [userdata, setUserdata] = useState(null); // Dynamic user data
+  const [userpost, setUserpost] = useState([]); // Dynamic user data
   const [errorMessage, setErrorMessage] = useState(""); // Error handling
   const [loading, setLoading] = useState(true); // Loading state
-
   useEffect(() => {
     const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
-
     // Fetch user details
     const fetchUserData = async () => {
       setLoading(true);
@@ -51,8 +47,35 @@ const ProfilePage = () => {
         console.error("Error:", error.message);
       }
     };
+    const fetchUserpost = async () => {
+      setLoading(true);
+      try {
+        if (!email || !password) {
+          setErrorMessage("Email or password not found in localStorage.");
+          setLoading(false);
+          return;
+        }
 
+        const response = await fetch("http://localhost:3001/api/post", {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          throw new Error("Error fetching user details.");
+        }
+
+        else if (response) {
+          setUserdata(response); // Set only user object
+        }
+        setLoading(false);
+      } catch (error) {
+        setErrorMessage("Failed to fetch user details. Please check your credentials.");
+        setLoading(false);
+        console.error("Error:", error.message);
+      }
+    };
     fetchUserData();
+    fetchUserpost();
   }, []);
 
   if (loading) {
@@ -91,7 +114,7 @@ const ProfilePage = () => {
 
             {/* Posts Section */}
             {userdata.posts && userdata.posts.length > 0 ? (
-              <ProfilePosts posts={userdata.posts} />
+              <ProfilePosts posts={userpost.media} caption={userpost.title}  />
             ) : (
               <div>No posts available</div>
             )}
