@@ -1,10 +1,10 @@
 import React from 'react';
-import Image from 'next/image';
+// import Image from 'next/image';
 const ProfilePosts = ({ posts,caption }) => {
   return (
       
         <div  className="bg-white shadow-md rounded-lg overflow-hidden">
-          <Image
+          <img
             src={posts}
             alt={caption}
             className="w-[500px] h-48 "

@@ -25,21 +25,21 @@ const ProfilePosts = ({ posts, caption, postId }) => {
   // Handle adding a new comment
   const handleAddComment = async () => {
     if (!newComment.trim() || !newTitle.trim()) return; // Don't allow empty comment or title
-  
+    
     const id = localStorage.getItem('id');
     if (!id) {
       console.error("User ID is missing from localStorage.");
       return;
     }
-  
+    
     try {
       const value = {
         content: newComment,
         title: newTitle,  // Ensure title is passed here
         author_id: id, 
-        postid: postId,
+        postId: postId, // Use postId here
       };
-  
+    
       setLoading(true); // Show loading indicator
       const token = localStorage.getItem('authToken');
       const response = await fetch(`http://localhost:3001/api/post/comment/${postId}`, {
@@ -50,12 +50,12 @@ const ProfilePosts = ({ posts, caption, postId }) => {
         },
         body: JSON.stringify(value),
       });
-  
+    
       const addedComment = await response.json();
       if (response.ok) {
-        setComments([...comments, addedComment]); // Add the new comment to the list
+        setComments([...comments, addedComment.comment]); // Add the new comment to the list
         setNewComment(''); // Clear the input field
-        settitle(''); // Clear the title field
+        setNewTitle('');  // Clear the title field
       } else {
         console.error('Failed to add comment:', addedComment.message);
       }
@@ -65,7 +65,6 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       setLoading(false); // Hide loading indicator
     }
   };
-  
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:shadow-xl">
@@ -114,20 +113,20 @@ const ProfilePosts = ({ posts, caption, postId }) => {
               </div>
 
               {/* New Comment Form */}
-              <div className="flex items-center space-x-3">
-                <input
-                  type="text"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  className="border rounded-md p-2 w-full"
-                  placeholder="Add a comment..."
-                />
+              <div className="flex flex-col gap-3 items-center space-x-3">
                 <input
                   type="text"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="border rounded-md p-2 w-full"
                   placeholder="Add a title..."
+                />
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  className="border rounded-md p-2 w-full"
+                  placeholder="Add a comment..."
                 />
                 <button
                   className="bg-blue-600 text-white px-4 py-2 rounded-md"
