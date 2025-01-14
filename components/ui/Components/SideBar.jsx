@@ -51,7 +51,7 @@ export function AppSidebar() {
   useEffect(() => {
     if (searchuser.length > 2) {
       const delayDebounceFn = setTimeout(() => {
-        fetchSuggestions(searchInput);
+        fetchSuggestions(searchuser);
       }, 500); // Delay of 500ms
 
       return () => clearTimeout(delayDebounceFn); // Clear timeout on cleanup
@@ -59,20 +59,20 @@ export function AppSidebar() {
       setSuggestions([]); // Clear suggestions if input is too short
     }
   }, [searchuser]);
-const fetchSuggestions=async()=>{
+const fetchSuggestions=async(query)=>{
   try{
-const response=await fetch(`http://localhost:3001/api/user`,{
-  method:"POST",
+const response=await fetch(`http://localhost:3001/api/user? query=${query}`,{
+  method:"GET",
   headers:{
     "Content-Type": "application/json",
-    body: JSON.stringify({ username:searchuser }),
-  }
+  },
+  
 });
      if(!response.ok){
       throw new Error("failed to fetch user")
      }
      const data = await response.json();
-      setSuggestions(data.username);
+      setSuggestions(data);
   }catch(error){
     setErrorMessage("Error fetching suggestions");
       console.error("Error:", error.message);
