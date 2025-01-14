@@ -3,42 +3,52 @@ import React, { useEffect, useState } from 'react';
 
 const ProfilePosts = ({ posts, caption, postId }) => {
   const [isCommentDialogOpen, setIsCommentDialogOpen] = useState(false);
-  const [newComment, setNewComment] = useState([]);
+  const [newComment, setNewComment] = useState('');
   const [newTitle, setNewTitle] = useState('');
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const response = await fetch(`http://localhost:3001/api/comment/${postId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch comments');
+        }
         const data = await response.json();
-        setComments(data);
-        console.log(data) // Ensure data is an array of comments
+        console.log(data)
+        setComments(data.comments || []); // Ensure data is an array
       } catch (error) {
         console.error('Error fetching comments:', error);
+        setError('Unable to load comments. Please try again.');
       }
     };
-    fetchComments();
-  }, [postId]); // Re-fetch when postId changes
 
-  // Handle adding a new comment
+    if (postId) fetchComments(); // Only fetch if postId is provided
+  }, [postId]);
+
   const handleAddComment = async () => {
-    if (!newComment.trim() || !newTitle.trim()) return; // Don't allow empty comment or title
-    
-    const id = localStorage.getItem('id');
-    if (!id) {
-      console.error("User ID is missing from localStorage.");
+    if (!newComment.trim() || !newTitle.trim()) {
+      alert('Both title and comment are required.');
       return;
     }
+
+    const id = localStorage.getItem('id');
+    if (!id) {
+      alert("User ID is missing from localStorage.");
+      return;
+    }
+
     try {
+      setLoading(true);
+      setError(null); // Reset error state
       const value = {
         content: newComment,
-        title: newTitle,  // Ensure title is passed here
-        author_id: id, 
-        postId: postId, // Use postId here
+        title: newTitle,
+        author_id: id,
+        postId,
       };
-    
-      setLoading(true); // Show loading indicator
       const token = localStorage.getItem('authToken');
       const response = await fetch(`http://localhost:3001/api/post/comment/${postId}`, {
         method: 'POST',
@@ -48,19 +58,20 @@ const ProfilePosts = ({ posts, caption, postId }) => {
         },
         body: JSON.stringify(value),
       });
-    
+
       const addedComment = await response.json();
       if (response.ok) {
-        setComments([...comments, addedComment.comment]); // Add the new comment to the list
-        setNewComment(''); // Clear the input field
-        setNewTitle('');  // Clear the title field
+        setComments([...comments, addedComment.comment]); // Update comments list
+        setNewComment('');
+        setNewTitle('');
       } else {
-        console.error('Failed to add comment:', addedComment.message);
+        setError(addedComment.message || 'Failed to add comment.');
       }
     } catch (error) {
       console.error('Error adding comment:', error);
+      setError('An error occurred. Please try again.');
     } finally {
-      setLoading(false); // Hide loading indicator
+      setLoading(false);
     }
   };
 
@@ -92,17 +103,21 @@ const ProfilePosts = ({ posts, caption, postId }) => {
           </button>
         </div>
       </div>
+
       {isCommentDialogOpen && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-96 max-w-full">
             <h3 className="text-xl font-semibold mb-4">Comments</h3>
+
+            {error && <p className="text-red-500">{error}</p>}
             <div className="space-y-4">
               {/* Existing Comments */}
               <div className="space-y-2">
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
                     <div key={index} className="p-2 border-b border-gray-200">
-                      <p className="text-sm text-gray-600">{comment.content}</p> {/* Display the content of each comment */}
+                      <p className="text-sm font-semibold">{comment.title}</p>
+                      <p className="text-sm text-gray-600">{comment.content}</p>
                     </div>
                   ))
                 ) : (
@@ -129,7 +144,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
                 <button
                   className="bg-blue-600 text-white px-4 py-2 rounded-md"
                   onClick={handleAddComment}
-                  disabled={loading} // Disable button while loading
+                  disabled={loading}
                 >
                   {loading ? 'Adding...' : 'Add'}
                 </button>
