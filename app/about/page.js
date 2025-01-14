@@ -6,7 +6,7 @@ function page() {
     <>
     <Nva/>
     <div>
-      
+      about
     </div>
     </>
   )

@@ -3,18 +3,17 @@ import React, { useEffect, useState } from 'react';
 
 const ProfilePosts = ({ posts, caption, postId }) => {
   const [isCommentDialogOpen, setIsCommentDialogOpen] = useState(false);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState([]);
   const [newTitle, setNewTitle] = useState('');
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // Fetch comments for the post
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/posts/${postId}/comments`);
+        const response = await fetch(`http://localhost:3001/api/comment/${postId}`);
         const data = await response.json();
-        setComments(data); // Ensure data is an array of comments
+        setComments(data);
+        console.log(data) // Ensure data is an array of comments
       } catch (error) {
         console.error('Error fetching comments:', error);
       }
@@ -31,7 +30,6 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       console.error("User ID is missing from localStorage.");
       return;
     }
-    
     try {
       const value = {
         content: newComment,
