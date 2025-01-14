@@ -113,16 +113,17 @@ const ProfilePosts = ({ posts, caption, postId }) => {
             <div className="space-y-4">
               {/* Existing Comments */}
               <div className="space-y-2">
-                {comments.length > 0 ? (
-                  comments.map((comment, index) => (
-                    <div key={index} className="p-2 border-b border-gray-200">
-                      <p className="text-sm font-semibold">{comment.title}</p>
-                      <p className="text-sm text-gray-600">{comment.content}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-500">No comments yet.</p>
-                )}
+              {comments.length > 0 ? (
+  comments.map((comment, index) => (
+    <div key={index} className="p-2 border-b border-gray-200">
+      <p className="text-sm font-semibold">{comment.title}</p>
+      <p className="text-sm text-gray-600">{comment.content}</p>
+    </div>
+  ))
+) : (
+  <p className="text-gray-500">No comments yet.</p>
+)}
+
               </div>
 
               {/* New Comment Form */}
