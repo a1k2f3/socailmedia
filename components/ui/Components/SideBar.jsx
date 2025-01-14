@@ -21,7 +21,6 @@ export function AppSidebar() {
 
   const searchUser=async(e)=>{
     e.preventDefault();
-    // setErrorMessage('');
     if (!searchUser) {  
       setErrorMessage("Please fill all the fields");
       return;
@@ -169,8 +168,23 @@ const handelsuggestion=(suggestion)=>{
                 <button className="bg-blue-600 text-white px-4 py-2 rounded-md" onClick={searchUser}>
                   <Search/>
                 </button>
+                
               </div>
             </div>
+            {suggestions.length > 0 && (
+        <ul className="absolute bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              onClick={() => handelsuggestion(suggestion)}
+              className="p-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      )}
+      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
             {/* Close Button */}
             <button
               className="mt-4 text-red-500 hover:text-red-700"
