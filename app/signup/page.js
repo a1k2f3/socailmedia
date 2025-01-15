@@ -53,7 +53,7 @@ const Register = () => {
                 setFile(null);
 
                 // Redirect after successful registration
-                router.push('/home');
+                router.push('/');
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || "An error occurred.");
