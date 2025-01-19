@@ -23,7 +23,7 @@ export function AppSidebar() {
 
   // Fetch suggestions with debounce
   useEffect(() => {
-    if (searchUserInput.length > 2) {
+    if (searchUserInput.length > 1) {
       const delayDebounceFn = setTimeout(() => fetchSuggestions(searchUserInput), 500)
       return () => clearTimeout(delayDebounceFn)
     }

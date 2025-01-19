@@ -15,7 +15,8 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       const response = await fetch(`http://localhost:3001/api/comment/${postId}`);
       if (!response.ok) throw new Error('Failed to fetch comments');
       const data = await response.json();
-      setComments(data.comments || []);
+      console.log(data)
+      setComments(data||[]);
     } catch (err) {
       console.error('Error fetching comments:', err);
       setError('Unable to load comments. Please try again later.');
@@ -53,7 +54,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       const addedComment = await response.json();
       if (!response.ok) throw new Error(addedComment.message || 'Failed to add comment.');
 
-      setComments((prevComments) => [...prevComments, addedComment.comment]);
+      // setComments((prevComments) => [...prevComments, addedComment.comment]);
       setNewComment('');
       setNewTitle('');
     } catch (err) {
@@ -110,7 +111,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
               {/* Existing Comments */}
               {comments.length > 0 ? (
                 comments.map((comment, index) => (
-                  <div key={index} className="p-2 border-b border-gray-200">
+                  <div key={comment._id} className="p-2 border-b border-gray-200">
                     <p className="text-sm font-semibold">{comment.title}</p>
                     <p className="text-sm text-gray-600">{comment.content}</p>
                   </div>

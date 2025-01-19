@@ -16,7 +16,9 @@ function Page() {
 
     const fetchUserPost = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/post", { method: "GET" });
+        const response = await fetch("http://localhost:3001/api/post",
+           { method: "GET" }
+          );
         if (!response.ok) throw new Error("Error fetching user posts.");
         const posts = await response.json(); // Assuming posts is an array
         setUserpost(posts);
