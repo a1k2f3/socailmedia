@@ -1,5 +1,5 @@
 "use client"
-import { Calendar, Home, Inbox, Search, Settings, UserRoundPen } from "lucide-react"
+import { Calendar, Home, Inbox, Search, Settings, UserRoundPen,BadgePlus  } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -86,6 +86,7 @@ export function AppSidebar() {
     { title: "Calendar", url: "#", icon: Calendar },
     { title: "Search", onClick: () => setSearch(true), icon: Search },
     { title: "Settings", url: "#", icon: Settings },
+    { title: "Create", url: "/post", icon: BadgePlus },
   ]
 
   return (
@@ -94,25 +95,26 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    {item.onClick ? (
-                      <button onClick={item.onClick} className="flex items-center gap-2">
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </button>
-                    ) : (
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    )}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+          <SidebarMenu>
+  {items.map((item) => (
+    <SidebarMenuItem key={item.title}>
+      <SidebarMenuButton asChild>
+        {item.onClick ? (
+          <button onClick={item.onClick} className="flex items-center gap-x-3">
+            <item.icon className="w-6 h-6" />
+            <span className="text-sm font-medium">{item.title}</span>
+          </button>
+        ) : (
+          <Link href={item.url} className="flex items-center gap-x-3">
+            <item.icon className="w-6 h-6" />
+            <span className="text-sm font-medium">{item.title}</span>
+          </Link>
+        )}
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  ))}
+</SidebarMenu>
+
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

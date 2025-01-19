@@ -25,7 +25,6 @@ export default function Home() {
       setErrorMessage("Please fill all the fields");
       return;
     }
-
     try {
       const response = await fetch('http://localhost:3001/api/login', {
         method: 'POST',
