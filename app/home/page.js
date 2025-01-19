@@ -61,7 +61,7 @@ function Page() {
               <ProfilePosts
                 key={index}
                 postId={post._id}
-                posts={`http://localhost:3001${post?.media}` || []} // Ensure media is passed as an array
+                posts={`http://localhost:3001${post.media}`}
                 caption={post.title || "No title available"}
               />
             ))
