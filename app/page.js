@@ -59,7 +59,7 @@ export default function Home() {
   useEffect(() => {
     socket.on("user logeind", (msg) => {
       console.log("Message from server:", msg);
-      
+      console.log("sjhcue");
     });
     // Cleanup socket listeners when component unmounts
     return () => {
