@@ -5,7 +5,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
   const [isCommentDialogOpen, setIsCommentDialogOpen] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [newTitle, setNewTitle] = useState('');
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -15,7 +15,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       const response = await fetch(`http://localhost:3001/api/comment/${postId}`);
       if (!response.ok) throw new Error('Failed to fetch comments');
       const data = await response.json();
-      console.log(data)
+      // console.log(data)
       setComments(data||[]);
     } catch (err) {
       console.error('Error fetching comments:', err);
@@ -54,7 +54,6 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       const addedComment = await response.json();
       if (!response.ok) throw new Error(addedComment.message || 'Failed to add comment.');
 
-      // setComments((prevComments) => [...prevComments, addedComment.comment]);
       setNewComment('');
       setNewTitle('');
     } catch (err) {
@@ -109,9 +108,13 @@ const ProfilePosts = ({ posts, caption, postId }) => {
             {error && <p className="text-red-500">{error}</p>}
             <div className="space-y-4">
               {/* Existing Comments */}
+              {
+                // console.log(comments)
+              }
               {comments.length > 0 ? (
                 comments.map((comment, index) => (
                   <div key={comment._id} className="p-2 border-b border-gray-200">
+                    {console.log(comment.title)}
                     <p className="text-sm font-semibold">{comment.title}</p>
                     <p className="text-sm text-gray-600">{comment.content}</p>
                   </div>

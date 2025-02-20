@@ -33,7 +33,6 @@ export default function Home() {
         },
         body: JSON.stringify({ email, password }),
       });
-
       if (!response.ok) {
         throw new Error('Login failed');
       }

@@ -86,7 +86,7 @@ const ProfilePage = () => {
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
           {/* Header Section */}
           <ProfileHeader
-            profilePicture={`http://localhost:3001${userdata?.image}` || "default-pic.jpg"}
+            profilePicture={`http://localhost:3001${userdata.image}` || "default-pic.jpg"}
             name={userdata?.username || "User"}
             bio={userdata?.Userbio || "No bio available"}
           />
