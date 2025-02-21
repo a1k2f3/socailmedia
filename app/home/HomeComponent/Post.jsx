@@ -112,8 +112,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
             {error && <p className="text-red-500">{error}</p>}
 
             <div className="space-y-4">
-  {/* Existing Comments */}
-  {comments.length > 0 ? (
+  {comments.length>0?(
     comments.map((comment) => (
       <div key={comment._id} className="p-2 border-b border-gray-200">
         <p className="text-sm font-semibold">{comment.title}</p>
@@ -140,10 +139,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
     />
     <button
       className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
-      onClick={async () => {
-        await handleAddComment();
-        await fetchComments(); // Refresh comments after adding
-      }}
+      onClick={handleAddComment}
       disabled={loading}
     >
       {loading ? 'Adding...' : 'Add'}
