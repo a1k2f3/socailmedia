@@ -19,7 +19,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       
       const data = await response.json();
       console.log("Fetched comments:", data); // Log before updating state
-      setComments(data || []);
+      setComments(data||[]);
     } catch (err) {
       console.error('Error fetching comments:', err);
       setError('Unable to load comments. Please try again later.');
@@ -115,7 +115,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
   {comments.length>0?(
     comments.map((comment) => (
       <div key={comment._id} className="p-2 border-b border-gray-200">
-        <p className="text-sm font-semibold">{comment.title}</p>
+        {/* <p className="text-sm font-semibold">{comment.title}</p> */}
         <p className="text-sm text-gray-600">{comment.content}</p>
       </div>
     ))
