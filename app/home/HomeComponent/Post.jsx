@@ -5,27 +5,31 @@ const ProfilePosts = ({ posts, caption, postId }) => {
   const [isCommentDialogOpen, setIsCommentDialogOpen] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [newTitle, setNewTitle] = useState('');
-  const [comments, setComments] = useState();
+  const [comments, setComments] = useState([]); // Initialize as an empty array
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchComments = useCallback(async () => {
+    if (!postId) return;
+  
     try {
-      setError(null); // Reset error state
+      setError(null);
       const response = await fetch(`http://localhost:3001/api/comment/${postId}`);
       if (!response.ok) throw new Error('Failed to fetch comments');
+      
       const data = await response.json();
-      // console.log(data)
-      setComments(data||[]);
+      console.log("Fetched comments:", data); // Log before updating state
+      setComments(data || []);
     } catch (err) {
       console.error('Error fetching comments:', err);
       setError('Unable to load comments. Please try again later.');
     }
   }, [postId]);
+  
 
   useEffect(() => {
-    if (postId) fetchComments();
-  }, [postId, fetchComments]);
+    fetchComments();
+  }, [fetchComments]);
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !newTitle.trim()) {
@@ -56,6 +60,7 @@ const ProfilePosts = ({ posts, caption, postId }) => {
 
       setNewComment('');
       setNewTitle('');
+      fetchComments(); // Refresh comments after adding
     } catch (err) {
       console.error('Error adding comment:', err);
       setError('An error occurred while adding the comment.');
@@ -76,7 +81,6 @@ const ProfilePosts = ({ posts, caption, postId }) => {
           height={300}
         />
       </div>
-
       {/* Post Caption and Actions */}
       <div className="p-4">
         <p className="text-lg font-semibold text-gray-800 mb-2">{caption}</p>
@@ -106,48 +110,47 @@ const ProfilePosts = ({ posts, caption, postId }) => {
             <h3 className="text-xl font-semibold mb-4">Comments</h3>
 
             {error && <p className="text-red-500">{error}</p>}
-            <div className="space-y-4">
-              {/* Existing Comments */}
-              {
-                // console.log(comments)
-              }
-              {comments.length > 0 ? (
-                comments.map((comment, index) => (
-                  <div key={comment._id} className="p-2 border-b border-gray-200">
-                    {console.log(comment.title)}
-                    <p className="text-sm font-semibold">{comment.title}</p>
-                    <p className="text-sm text-gray-600">{comment.content}</p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500">No comments yet.</p>
-              )}
 
-              {/* New Comment Form */}
-              <div className="flex flex-col gap-3">
-                <input
-                  type="text"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="border rounded-md p-2 w-full"
-                  placeholder="Add a title..."
-                />
-                <input
-                  type="text"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  className="border rounded-md p-2 w-full"
-                  placeholder="Add a comment..."
-                />
-                <button
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
-                  onClick={handleAddComment}
-                  disabled={loading}
-                >
-                  {loading ? 'Adding...' : 'Add'}
-                </button>
-              </div>
-            </div>
+            <div className="space-y-4">
+  {/* Existing Comments */}
+  {comments.length > 0 ? (
+    comments.map((comment) => (
+      <div key={comment._id} className="p-2 border-b border-gray-200">
+        <p className="text-sm font-semibold">{comment.title}</p>
+        <p className="text-sm text-gray-600">{comment.content}</p>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500">No comments yet.</p>
+  )}
+  <div className="flex flex-col gap-3">
+    <input
+      type="text"
+      value={newTitle}
+      onChange={(e) => setNewTitle(e.target.value)}
+      className="border rounded-md p-2 w-full"
+      placeholder="Add a title..."
+    />
+    <input
+      type="text"
+      value={newComment}
+      onChange={(e) => setNewComment(e.target.value)}
+      className="border rounded-md p-2 w-full"
+      placeholder="Add a comment..."
+    />
+    <button
+      className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
+      onClick={async () => {
+        await handleAddComment();
+        await fetchComments(); // Refresh comments after adding
+      }}
+      disabled={loading}
+    >
+      {loading ? 'Adding...' : 'Add'}
+    </button>
+  </div>
+</div>
+
 
             {/* Close Button */}
             <button
