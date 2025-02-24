@@ -13,6 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import local from "next/font/local"
 
 export function AppSidebar() {
   const [search, setSearch] = useState(false)
@@ -56,6 +57,7 @@ export function AppSidebar() {
 
   const handleSearchUser = async (e) => {
     e.preventDefault()
+    const id=localStorage.getItem('id');
     if (!searchUserInput) {
       setErrorMessage("Please enter a username")
       return
@@ -65,7 +67,7 @@ export function AppSidebar() {
       const response = await fetch('http://localhost:3001/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: searchUserInput }),
+        body: JSON.stringify({ username: searchUserInput,author_id:id }),
       })
       if (!response.ok) throw new Error("Search failed")
 
