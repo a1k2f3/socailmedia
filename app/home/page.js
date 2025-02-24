@@ -10,7 +10,7 @@ function Page() {
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-    const id=localStorage.getItem("id");
+    // const id=localStorage.getItem("id");
     
     setIsAuthenticated(Boolean(token));
 

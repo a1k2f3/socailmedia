@@ -18,16 +18,42 @@ import local from "next/font/local"
 export function AppSidebar() {
   const [search, setSearch] = useState(false)
   const [searchUserInput, setSearchUserInput] = useState('')
+  const [usersearch, setusersearch] = useState([])
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-
+  const [id, setId] = useState(null)
   // Fetch suggestions with debounce
   useEffect(() => {
     if (searchUserInput.length > 1) {
       const delayDebounceFn = setTimeout(() => fetchSuggestions(searchUserInput), 500)
       return () => clearTimeout(delayDebounceFn)
     }
+    setId(localStorage.getItem('id'))
+    const handle_searchhistory=async()=>{
+      try {
+        setLoading(true)
+        const response = await fetch(`http://localhost:3001/api/search?author_id=${id}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+         
+        })
+        // const data=response.json
+    
+        if (!response.ok) throw new Error("Search failed")
+    
+        const data = await response.json()
+        setusersearch(data||[])
+        console.log("User found:", data)
+      } catch (error) {
+        setErrorMessage("Please check your input")
+        console.error("Error:", error.message)
+      } finally {
+        setLoading(false)
+      }
+    
+    }
+    handle_searchhistory()
     setSuggestions([])
   }, [searchUserInput])
 
@@ -55,9 +81,9 @@ export function AppSidebar() {
     setSuggestions([])
   }
 
+  // const id=localStorage.getItem('id');
   const handleSearchUser = async (e) => {
     e.preventDefault()
-    const id=localStorage.getItem('id');
     if (!searchUserInput) {
       setErrorMessage("Please enter a username")
       return
@@ -162,6 +188,22 @@ export function AppSidebar() {
                 </ul>
               )}
               {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+              {suggestions.length > 0 && (
+                <ul className="absolute bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                  {usersearch.map((suggestion, index) => (
+                    <li
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      aria-label={`Suggestion: ${suggestion}`}
+                    >
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              
+            
             </div>
 
             {/* Close Button */}
