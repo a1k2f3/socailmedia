@@ -86,7 +86,7 @@ const ProfilePage = () => {
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
           {/* Header Section */}
           <ProfileHeader
-            profilePicture={`http://localhost:3001${userdata.image}` || "default-pic.jpg"}
+            profilePicture={`http://localhost:3001/images/${userdata.image}` || "default-pic.jpg"}
             name={userdata?.username || "User"}
             bio={userdata?.Userbio || "No bio available"}
           />
@@ -104,7 +104,7 @@ const ProfilePage = () => {
               {userpost.map((post, index) => (
                 <ProfilePosts
                   key={index}
-                  posts={`http://localhost:3001${post?.media}` || []} // Ensure media is passed as an array
+                  posts={`http://localhost:3001/media/${post?.media}` || []} // Ensure media is passed as an array
                   caption={post.title || "No title available"}
                 />
               ))}

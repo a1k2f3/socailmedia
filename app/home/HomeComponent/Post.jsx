@@ -25,8 +25,6 @@ const ProfilePosts = ({ posts, caption, postId }) => {
       setError('Unable to load comments. Please try again later.');
     }
   }, [postId]);
-  
-
   useEffect(() => {
     fetchComments();
   }, [fetchComments]);
